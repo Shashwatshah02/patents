@@ -78,6 +78,7 @@ const home = page('Patent Archive | Shashwat Shah', 'Explore patent applications
       <p class="eyebrow">${record.type} <span>·</span> ${record.id}</p>
       <h3><a href="${caseUrl(record.id)}">${esc(record.title)}</a></h3>
       <p>${esc(record.summary)}</p>
+      ${record.hearingUpdate ? `<a class="hearing-link" href="${caseUrl(record.id)}#hearing-update">Second hearing · <time datetime="${record.hearingUpdate.date}">${record.hearingUpdate.label}</time></a>` : ''}
       <a class="case-link" href="${caseUrl(record.id)}" aria-label="View case ${record.id}">View case</a>
     </article>`).join('')}</div>
     <p class="archive-note">Filing history reflects the documents in this archive. For current application or grant status, consult the official patent register.</p>
@@ -89,12 +90,14 @@ await cp(join(root, photo), join(output, 'assets/pipeline-robot.jpg'));
 await write('', home);
 
 for (const record of cases) {
+  const update = record.hearingUpdate;
   const timeline = record.timeline ? `<section id="timeline" class="section wrap" aria-labelledby="timeline-title">
     <div class="section-heading"><h2 id="timeline-title">Filing timeline</h2></div>
     <ol class="timeline">${record.timeline.map(([date, label, title, description, slug]) => `<li>
       <time datetime="${date}">${label}</time><div><h3>${esc(title)}</h3><p>${esc(description)}</p>
-      <a href="${pdfUrl(slug)}">${esc(record.documents.find(([id]) => id === slug)[1])} (PDF)</a></div>
-    </li>`).join('')}</ol>
+      ${slug ? `<a href="${pdfUrl(slug)}">${esc(record.documents.find(([id]) => id === slug)[1])} (PDF)</a>` : ''}</div>
+    </li>`).join('')}
+    ${update ? `<li><time datetime="${update.date}">${update.label}</time><div><h3>${esc(update.title)}</h3><p>Scheduled date following the adjournment request.</p></div></li>` : ''}</ol>
   </section>` : '';
   await write('cases/' + record.id, page(record.title + ' | Patent Archive', record.summary, `
     <section class="subhero"><div class="wrap">
@@ -102,6 +105,10 @@ for (const record of cases) {
       <h1>${esc(record.title)}</h1><p class="intro">${esc(record.summary)}</p>
       <div class="actions"><a class="button primary" href="#case-documents">Browse case documents</a>${timeline ? '<a class="button secondary" href="#timeline">Filing timeline</a>' : ''}</div>
     </div></section>
+    ${update ? `<aside class="wrap hearing-note" id="hearing-update" aria-labelledby="hearing-title">
+      <h2 id="hearing-title">${esc(update.title)}</h2>
+      <p>${esc(update.description)}</p>
+    </aside>` : ''}
     ${timeline}
     <section class="section wrap" id="case-documents" aria-labelledby="case-documents-title">
       <div class="section-heading"><h2 id="case-documents-title">Case documents</h2><span>${record.documents.length} PDFs</span></div>

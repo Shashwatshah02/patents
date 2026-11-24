@@ -66,6 +66,9 @@ figcaption { color: var(--frost); font-size: .875rem; padding: .8rem 1rem; }
 .case-card h3 a:hover { text-decoration: underline; }
 .case-card p:not(.eyebrow) { color: var(--muted); }
 .case-link { font-weight: 700; margin-top: auto; }
+.hearing-link { font-weight: 700; }
+.hearing-note { margin-top: 2rem; padding: 1.15rem; border-left: 4px solid #51764c; background: #eaf2e3; }
+.hearing-note h2 { font-size: 1.35rem; margin-bottom: .4rem; }
 .archive-note { font-size: .9rem; color: var(--muted); margin-top: 1.65rem; max-width: 48rem; }
 footer { border-top: 1px solid var(--line); background: white; font-size: .9rem; }
 footer strong { font-weight: 650; }

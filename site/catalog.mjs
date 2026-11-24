@@ -12,6 +12,12 @@ export const cases = [
     title: 'A Pipeline Traversing Robot',
     type: 'Patent application',
     summary: 'A robotic platform designed to travel along horizontal and vertical pipes, with magnetic adhesion and onboard sensing for visual inspection.',
+    hearingUpdate: {
+      date: '2026-12-16',
+      label: '16 December 2026',
+      title: 'Second hearing rescheduled',
+      description: 'The second hearing was originally scheduled for 18 November 2026. The applicants requested an adjournment, and the hearing is now scheduled for 16 December 2026.',
+    },
     documents: [
       ['hearing-statement', 'Written statement for the hearing', 'Hearing', hearing, 'Pipeline Traversing Robot Submission - FINAL.pdf', 'Dated 20 September 2026'],
       ['final-marked-claims', 'Marked claims', 'September submission', final, 'markedclaims.pdf', 'Revision marks'],
@@ -28,6 +34,7 @@ export const cases = [
       ['2026-09-09', '9 September 2026', 'Hearing date', 'The hearing notice and the written statement both identify this date.', 'hearing-statement'],
       ['2026-09-20', '20 September 2026', 'Written statement dated', 'The written submission addresses examination objections and discusses the amended claims.', 'hearing-statement'],
       ['2026-09-22', '22 September 2026', 'Final submission materials', 'The archive contains clean and marked claims and updated drawings in the September submission folder.', 'final-clean-claims'],
+      ['2026-11-18', '18 November 2026', 'Original date for the second hearing', 'The applicants requested an adjournment of the hearing scheduled for this date.'],
     ],
   },
   {
