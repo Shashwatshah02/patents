@@ -5,6 +5,7 @@ import { cases, photo } from './catalog.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = join(root, 'dist');
+const githubRepository = 'https://github.com/Shashwatshah02/patents';
 const patentPortal = 'https://ipindia.gov.in/pages/patents/e-services/track-status';
 const designPortal = 'https://search.ipindia.gov.in/DesignApplicationStatus/';
 const esc = (value) => String(value).replace(/[&<>"']/g, (character) => ({
@@ -39,7 +40,10 @@ function page(title, description, content, current = '') {
     <nav aria-label="Main navigation">${navigation.map(([label, url, key]) => `<a href="${url}"${current === key ? ' aria-current="page"' : ''}>${label}</a>`).join('')}</nav>
   </div></header>
   <main id="main">${content}</main>
-  <footer><div class="wrap footer-inner"><strong>Shashwat Shah · Patent archive</strong></div></footer>
+  <footer><div class="wrap footer-inner">
+    <strong>Shashwat Shah · Patent archive</strong>
+    <a href="${githubRepository}">Patent archive on GitHub</a>
+  </div></footer>
 </body>
 </html>`;
 }
