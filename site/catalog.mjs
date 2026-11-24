@@ -1,0 +1,53 @@
+const gas = '202421078054 - IoT enabled robot for detecting gas pipe';
+const pipeline = '202521045231 - A pipeline traversing robot';
+const design = '458534-001 - Adjustable fidget spinner base for pipe climbing';
+const fer = 'FER Response Final';
+const hearing = 'RESPONSE TO HEARING DOCUMENTS';
+const final = 'FINAL SUBMISSION - 22sept 2026';
+
+export const photo = pipeline + '/pipelineRobotImage.jpg';
+export const cases = [
+  {
+    id: '202521045231',
+    title: 'A Pipeline Traversing Robot',
+    type: 'Patent application',
+    summary: 'A robotic platform designed to travel along horizontal and vertical pipes, with magnetic adhesion and onboard sensing for visual inspection.',
+    documents: [
+      ['hearing-statement', 'Written statement for the hearing', 'Hearing', hearing, 'Pipeline Traversing Robot Submission - FINAL.pdf', 'Dated 20 September 2026'],
+      ['final-marked-claims', 'Marked claims', 'September submission', final, 'markedclaims.pdf', 'Revision marks'],
+      ['final-clean-claims', 'Clean claims', 'September submission', final, 'umarkedclaims.pdf', 'Dated 22 September 2026'],
+      ['final-drawings', 'Submission drawings', 'September submission', final, 'drawings.pdf'],
+      ['fer-marked-claims', 'Marked claims from examination response', 'Examination response', fer, 'marked_claims.pdf'],
+      ['fer-specification', 'Complete specification from examination response', 'Examination response', fer, 'completespecification.pdf'],
+      ['pipeline-abstract', 'Application abstract', 'Application', pipeline, 'Abstract.pdf'],
+      ['pipeline-drawings', 'Application drawings', 'Application', pipeline, 'Drawings.pdf'],
+    ],
+    timeline: [
+      ['2025-05-10', '10 May 2025', 'Application filed', 'Filing date recorded in the written statement.', 'pipeline-abstract'],
+      ['2026-07-12', '12 July 2026', 'Examination response dated', 'The merged examination response in the archive includes pages dated 12 July 2026.', 'fer-marked-claims'],
+      ['2026-09-09', '9 September 2026', 'Hearing date', 'The hearing notice and the written statement both identify this date.', 'hearing-statement'],
+      ['2026-09-20', '20 September 2026', 'Written statement dated', 'The written submission addresses examination objections and discusses the amended claims.', 'hearing-statement'],
+      ['2026-09-22', '22 September 2026', 'Final submission materials', 'The archive contains clean and marked claims and updated drawings in the September submission folder.', 'final-clean-claims'],
+    ],
+  },
+  {
+    id: '202421078054',
+    title: 'IoT-Enabled Robot for Detecting Gas Pipe Leakage',
+    type: 'Patent application',
+    summary: 'A robot that travels along gas pipes and uses onboard sensors, imaging and a connected monitoring center to detect and report potential leaks.',
+    documents: [
+      ['gas-abstract', 'Application abstract', 'Application', gas, 'Abstract.pdf'],
+      ['gas-specification', 'Complete specification', 'Application', gas, 'Complete Specification.pdf'],
+      ['gas-drawings', 'Application drawings', 'Application', gas, 'Drawings.pdf'],
+    ],
+  },
+  {
+    id: '458534-001',
+    title: 'Adjustable Fidget Spinner Base for Pipe Climbing',
+    type: 'Design record',
+    summary: 'An adjustable mechanical base for pipe-climbing applications. The representation sheets show the shape and configuration from multiple views.',
+    documents: [
+      ['design-representations', 'Design representation sheets', 'Design', design, 'Rep_Sheet (1).pdf'],
+    ],
+  },
+];

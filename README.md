@@ -6,6 +6,12 @@ A collection of patent-related research, engineering designs, and intellectual p
 
 This repository serves as a central archive of technical disclosures, design documentation, patent materials, and examination responses.
 
+## Website
+
+Run `node site/build.mjs` from the repository root to generate the static site in `dist/`. To preview it locally, run `python3 -m http.server 8000 --directory dist` and open `http://localhost:8000`.
+
+Edit `site/catalog.mjs` to update the case summaries, timeline, or public document selection. Vercel uses `vercel.json` to build the site and serve `dist/`.
+
 ## Patent Portfolio
 
 | Reference number | Invention | Focus area | Documentation |
