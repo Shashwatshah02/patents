@@ -1,16 +1,16 @@
-import { cp, mkdir, writeFile } from 'node:fs/promises';
+import { cp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { cases, photo } from './catalog.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = join(root, 'dist');
-const repo = 'https://github.com/Shashwatshah02/patents';
+const patentPortal = 'https://ipindia.gov.in/pages/patents/e-services/track-status';
+const designPortal = 'https://search.ipindia.gov.in/DesignApplicationStatus/';
 const esc = (value) => String(value).replace(/[&<>"']/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 }[character]));
 const caseUrl = (id) => '/cases/' + id + '/';
-const pdfUrl = (slug) => '/documents/' + slug + '.pdf';
 const libraryUrl = '/documents/';
 const allDocuments = cases.flatMap((record) => record.documents.map((doc) => ({ record, doc })));
 
@@ -39,20 +39,16 @@ function page(title, description, content, current = '') {
     <nav aria-label="Main navigation">${navigation.map(([label, url, key]) => `<a href="${url}"${current === key ? ' aria-current="page"' : ''}>${label}</a>`).join('')}</nav>
   </div></header>
   <main id="main">${content}</main>
-  <footer><div class="wrap footer-inner"><strong>Shashwat Shah · Patent archive</strong><a href="${repo}">Source repository</a></div></footer>
+  <footer><div class="wrap footer-inner"><strong>Shashwat Shah · Patent archive</strong></div></footer>
 </body>
 </html>`;
 }
 
 function documents(entries, filtered = false) {
-  return `<ul class="documents" id="document-list">${entries.map(({ record, doc: [slug, label, stage, , , note] }) => `
+  return `<ul class="documents" id="document-list">${entries.map(({ record, doc: [slug, label, stage, note] }) => `
     <li data-document data-case="${record.id}" data-stage="${esc(stage)}">
       <div><strong id="${slug}">${esc(label)}</strong><div class="meta">
       ${filtered ? `<a href="${caseUrl(record.id)}">${record.id}</a> · ` : ''}${esc(stage)}${note ? ' · ' + esc(note) : ''}</div></div>
-      <div class="document-actions">
-        <a href="${pdfUrl(slug)}" aria-describedby="${slug}">Open PDF</a>
-        <a href="${pdfUrl(slug)}" download aria-describedby="${slug}">Download</a>
-      </div>
     </li>`).join('')}</ul>`;
 }
 
@@ -68,7 +64,7 @@ const home = page('Patent Archive | Shashwat Shah', 'Explore patent applications
       <p class="eyebrow">Robotics · Pipeline inspection · Mechanical design</p>
       <h1>Patent<br>archive<span>.</span></h1>
       <p class="intro">Explore the inventions, drawings and filing history behind three pipeline robotics and mechanical design records.</p>
-      <div class="actions"><a class="button primary" href="#cases">Browse cases</a><a class="button secondary" href="${libraryUrl}">Find a document</a></div>
+      <div class="actions"><a class="button primary" href="#cases">Browse cases</a><a class="button secondary" href="${libraryUrl}">Browse the document index</a></div>
     </div>
     <figure><img src="/assets/pipeline-robot.jpg" alt="Pipeline robot prototype with a wheeled chassis, sensors and exposed wiring" width="1280" height="960"><figcaption>Pipeline traversing robot prototype · 202521045231</figcaption></figure>
   </div></section>
@@ -81,21 +77,23 @@ const home = page('Patent Archive | Shashwat Shah', 'Explore patent applications
       ${record.hearingUpdate ? `<a class="hearing-link" href="${caseUrl(record.id)}#hearing-update">Second hearing · <time datetime="${record.hearingUpdate.date}">${record.hearingUpdate.label}</time></a>` : ''}
       <a class="case-link" href="${caseUrl(record.id)}" aria-label="View case ${record.id}">View case</a>
     </article>`).join('')}</div>
-    <p class="archive-note">Filing history reflects the documents in this archive. For current application or grant status, consult the official patent register.</p>
+    <p class="archive-note">Use each case’s reference number on the official IP India portal to check the current status and find available filing documents.</p>
   </section>`);
 
-await mkdir(join(output, 'documents'), { recursive: true });
+await rm(output, { recursive: true, force: true });
 await cp(join(root, 'site/assets'), join(output, 'assets'), { recursive: true });
 await cp(join(root, photo), join(output, 'assets/pipeline-robot.jpg'));
 await write('', home);
 
 for (const record of cases) {
   const update = record.hearingUpdate;
+  const isDesign = record.type === 'Design record';
+  const portal = isDesign ? designPortal : patentPortal;
   const timeline = record.timeline ? `<section id="timeline" class="section wrap" aria-labelledby="timeline-title">
     <div class="section-heading"><h2 id="timeline-title">Filing timeline</h2></div>
     <ol class="timeline">${record.timeline.map(([date, label, title, description, slug]) => `<li>
       <time datetime="${date}">${label}</time><div><h3>${esc(title)}</h3><p>${esc(description)}</p>
-      ${slug ? `<a href="${pdfUrl(slug)}">${esc(record.documents.find(([id]) => id === slug)[1])} (PDF)</a>` : ''}</div>
+      ${slug ? `<a href="#${slug}">${esc(record.documents.find(([id]) => id === slug)[1])}</a>` : ''}</div>
     </li>`).join('')}
     ${update ? `<li><time datetime="${update.date}">${update.label}</time><div><h3>${esc(update.title)}</h3><p>Scheduled date following the adjournment request.</p></div></li>` : ''}</ol>
   </section>` : '';
@@ -111,18 +109,19 @@ for (const record of cases) {
     </aside>` : ''}
     ${timeline}
     <section class="section wrap" id="case-documents" aria-labelledby="case-documents-title">
-      <div class="section-heading"><h2 id="case-documents-title">Case documents</h2><span>${record.documents.length} PDFs</span></div>
+      <div class="section-heading"><h2 id="case-documents-title">Case documents</h2><span>${record.documents.length} listed</span></div>
+      <p class="portal-note">This list summarizes selected submissions. To check the official record and download available documents, search IP India using ${isDesign ? 'design reference' : 'application number'} <strong>${record.id}</strong>. <a href="${portal}">${isDesign ? 'Open IP India Design Application Status' : 'Open IP India Patent Application Status'}</a></p>
       ${documents(record.documents.map((doc) => ({ record, doc })))}
-      <p class="archive-note">Filing history reflects the documents in this archive. For current application or grant status, consult the official patent register.</p>
     </section>`));
 }
 
-await write('documents', page('Document Library | Patent Archive', 'Search and open selected patent and design documents.', `
+await write('documents', page('Document Index | Patent Archive', 'Search the index of selected patent and design submissions.', `
   <section class="subhero"><div class="wrap">
     <a class="back" href="/#cases">All cases</a>
-    <h1>Document library</h1><p class="intro">Find abstracts, specifications, claims, drawings and hearing materials by title, case or filing stage.</p>
+    <h1>Document index</h1><p class="intro">Find abstracts, specifications, claims, drawings and hearing materials by title, case or filing stage.</p>
   </div></section>
   <section class="wrap section library" aria-label="Browse documents">
+    <p class="portal-note">This index lists selected submissions. To download available documents, use the reference number shown for each entry on the official IP India portal. <a href="${patentPortal}">Patent application lookup</a> · <a href="${designPortal}">Design application lookup</a></p>
     <form id="filters" class="filters" role="search" hidden>
       <label for="query">Search documents<input type="search" id="query" placeholder="Try claims or 202521045231" autocomplete="off"></label>
       <label for="case-filter">Case<select id="case-filter"><option value="">All cases</option>${cases.map(({ id, title }) => `<option value="${id}">${id} · ${esc(title)}</option>`).join('')}</select></label>
@@ -133,7 +132,3 @@ await write('documents', page('Document Library | Patent Archive', 'Search and o
     <p id="empty" hidden>No documents match. Try a different search or clear a filter.</p>
   </section>
   <script src="/assets/library.js" defer></script>`, 'documents'));
-
-for (const { doc: [slug, , , folder, filename] } of allDocuments) {
-  await cp(join(root, folder, filename), join(output, 'documents', slug + '.pdf'));
-}
